@@ -5,16 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tscv -w"
+    "dev": "tsc -w",
+    "link": "npm install -g .",
+    "unlink": "npm uninstall -g nextauth-client"
   },
-"bin": {
-  "nextauth-client": "./index.js"
-}
-,
+  "bin": {
+    "nextauth-client": "./dist/index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^24.2.1",
     "typescript": "^5.9.2"
   },
   "dependencies": {

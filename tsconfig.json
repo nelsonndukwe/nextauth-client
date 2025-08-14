@@ -4,6 +4,7 @@
   "compilerOptions": {
     "lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
     "noUncheckedIndexedAccess": true,
+    "outDir": "dist",
     "module": "Node16",
     "target": "es2022",
     "strict": true,
