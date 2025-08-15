@@ -1,7 +1,15 @@
 #!/usr/bin/env node
+import { Command } from "commander";
 
-const message = (msg: string) => {
-  console.log(`%c${msg}`, "color: #00f; font-weight: bold;");
-};
+const program = new Command();
 
-message("Hello, World!, This is a TypeScript script running in Node.js!");
+program
+  .name("NextAuth-client")
+  .description("CLI to some JavaScript string utilities")
+  .version("0.8.0");
+
+program.action((self) => {
+  console.log(`Hello world Sir`);
+});
+
+program.parse(process.argv);
