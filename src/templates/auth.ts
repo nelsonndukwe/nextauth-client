@@ -1,42 +1,79 @@
-import NextAuth from "next-auth";
-import "next-auth/jwt";
+// Type augmentations
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    accessToken?: string;
+  }
+}
+
+export const getAuthConfig = (providers: string[], storage?: boolean) => {
+  return `import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
-// ... all other imports here
+import { object, string } from "zod";
+import "next-auth/jwt";
 
-import { createStorage } from "unstorage";
-import memoryDriver from "unstorage/drivers/memory";
-import vercelKVDriver from "unstorage/drivers/vercel-kv";
-import { UnstorageAdapter } from "@auth/unstorage-adapter";
+import { UpstashRedisAdapter } from "@auth/upstash-redis-adapter";
+import { Redis } from "@upstash/redis";
 
-const storage = createStorage({
-  driver: process.env.VERCEL
-    ? vercelKVDriver({
-        url: process.env.AUTH_KV_REST_API_URL,
-        token: process.env.AUTH_KV_REST_API_TOKEN,
-        env: false,
-      })
-    : memoryDriver(),
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_URL!,
+  token: process.env.UPSTASH_REDIS_TOKEN!,
+});
+
+export const signInSchema = object({
+  email: string().email("Invalid email").min(1, "Email is required"),
+  password: string()
+    .min(1, "Password is required")
+    .min(8, "Password must be more than 8 characters")
+    .max(32, "Password must be less than 32 characters"),
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: !!process.env.AUTH_DEBUG,
   theme: { logo: "https://authjs.dev/img/logo-sm.png" },
-  adapter: UnstorageAdapter(storage),
+  adapter: UpstashRedisAdapter(redis),
   providers: [
-    GitHub,
-    // ...other providers here
+    providers.includes("github") && GitHub,
+    providers.includes("google) && Google,
+providers.includes("auth0") && Auth0,
+    providers.includes("discord") && Discord,
+    providers.includes("apple") && Apple,
+    providers.includes("twitter") && Twitter,
+
+    // Credentials provider for email/password login
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+        if (!credentials) throw new Error("Missing credentials");
+
+        const { email, password } = signInSchema.parse(credentials);
+
+        // TODO: Implement actual DB lookup here
+        const user = await new Promise((err, resolve) => {
+          setTimeout(() => {}, 300);
+        });
+
+        if (!user) throw new Error("Invalid credentials");
+        return user;
+      },
+    }),
   ],
-  basePath: "/auth",
-  session: { strategy: "jwt" },
+
   callbacks: {
-    authorized({ request, auth }) {
-      const { pathname } = request.nextUrl;
-      if (pathname === "/middleware-example") return !!auth;
-      return true;
-    },
+    authorized: async ({ auth }) => !!auth,
     jwt({ token, trigger, session, account }) {
       if (trigger === "update") token.name = session.user.name;
-      if (account?.provider === "keycloak") {
+      if (account?.provider === "google") {
         return { ...token, accessToken: account.access_token };
       }
       return token;
@@ -46,9 +83,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
   },
+  basePath: "/auth",
+  session: { strategy: "jwt" },
   experimental: { enableWebAuthn: true },
 });
-
-export const getAuthConfig = (storage?:boolean) => {
-  return `ttt`;
+`;
 };

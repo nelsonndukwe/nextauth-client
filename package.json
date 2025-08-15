@@ -20,8 +20,11 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@auth/upstash-redis-adapter": "^2.10.0",
+    "@upstash/redis": "^1.35.3",
     "commander": "^14.0.0",
     "inquirer": "^12.9.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "zod": "^4.0.17"
   }
 }

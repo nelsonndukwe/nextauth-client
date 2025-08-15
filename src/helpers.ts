@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { getAuthConfig } from "./templates/auth";
+import { writeMiddleware } from "./templates/middlewear";
 
 // --------- HELPERS ----------
 export function scaffoldAppRouter(
@@ -9,10 +10,10 @@ export function scaffoldAppRouter(
   storage = false
 ) {
   console.log("📦 Setting up NextAuth.js for App Router...");
-  const authPath = path.join(process.cwd(), "src", "auth.ts"); // Create an auth configuration file with the various providers and authentication settings
-  const routePath = path.join(
-    process.cwd(),
-    "src",
+  const authPath = path.join(process.cwd(), "auth.ts"); // Create an auth configuration file with the various providers and authentication settings
+  const middlewarePath = path.resolve("middleware.ts");
+  const routePath = path.resolve(
+    src ? "src" : "",
     "app",
     "api",
     "auth",
@@ -44,17 +45,21 @@ export function scaffoldAppRouter(
 
   fs.mkdirSync(path.dirname(routePath), { recursive: true });
 
-  fs.writeFileSync(authPath, getAuthConfig(storage));
+  fs.writeFileSync(authPath, getAuthConfig(providers, storage));
   fs.writeFileSync(
     routePath,
-    `export { handlers as GET, handlers as POST } from "../../../../auth";`
+    `import { handlers } from "@/auth" // Referring to the auth.ts we just created
+export const { GET, POST } = handlers`
   );
+
+  fs.writeFileSync(middlewarePath, writeMiddleware());
 
   console.log("✅ App Router setup complete!");
 }
 
-export function scaffoldPagesRouter(  providers: string[],
-storage = false) {
+export function scaffoldPagesRouter(providers: string[], storage = false) {
+  const middlewarePath = path.resolve("middleware.ts");
+
   console.log("📦 Setting up NextAuth.js for Pages Router...");
   const apiPath = path.join(
     process.cwd(),
@@ -75,7 +80,8 @@ storage = false) {
   });
 
   fs.mkdirSync(path.dirname(apiPath), { recursive: true });
-  fs.writeFileSync(apiPath, getAuthConfig(storage));
+  fs.writeFileSync(apiPath, getAuthConfig(providers, storage));
+  fs.writeFileSync(middlewarePath, writeMiddleware());
 
   console.log("✅ Pages Router setup complete!");
 }
