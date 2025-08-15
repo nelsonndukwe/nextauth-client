@@ -1,4 +1,20 @@
 export const getAuthConfig = (providers: string[], storage?: boolean) => {
+  // Build imports
+  const providerImports = providers
+    .map((provider) => {
+      const importName = provider.charAt(0).toUpperCase() + provider.slice(1);
+      return `import ${importName} from "next-auth/providers/${provider}";`;
+    })
+    .join("\n");
+
+  // Build provider array
+  const providerArray = providers
+    .map((provider) => {
+      const name = provider.charAt(0).toUpperCase() + provider.slice(1);
+      return `${name},`;
+    })
+    .join(",\n    ");
+
   return `
   declare module "next-auth" {
   interface Session {
@@ -40,12 +56,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   theme: { logo: "https://authjs.dev/img/logo-sm.png" },
   adapter: UpstashRedisAdapter(redis),
   providers: [
-    providers.includes("github") && GitHub,
-    providers.includes("google) && Google,
-providers.includes("auth0") && Auth0,
-    providers.includes("discord") && Discord,
-    providers.includes("apple") && Apple,
-    providers.includes("twitter") && Twitter,
+   ${providerArray}
 
     // Credentials provider for email/password login
     Credentials({
