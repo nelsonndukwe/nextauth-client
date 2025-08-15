@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 import { Command } from "commander";
 import { scaffoldAppRouter, scaffoldPagesRouter } from "../helpers";
@@ -8,6 +9,7 @@ export default new Command("init")
   .action(() => {
     const cwd = process.cwd();
     const envPath = path.join(cwd, ".env.local");
+
     askSetupQuestions()
       .then((answers) => {
         const options = {
@@ -17,11 +19,17 @@ export default new Command("init")
           providers: answers.providers,
           storage: answers.storage,
         };
+        fs.mkdirSync(path.dirname(envPath), { recursive: true });
+        fs.writeFileSync(
+          envPath,
+          `export { handlers as GET, handlers as POST } from "../../../../auth";`
+        );
         if (options.app)
           scaffoldAppRouter(options.src, options.providers, options.storage);
         if (options.pages)
           scaffoldPagesRouter(options.providers, options.storage);
       })
+
       .catch((error) => {
         if (error.isTtyError) {
           console.log(`error`, error);
