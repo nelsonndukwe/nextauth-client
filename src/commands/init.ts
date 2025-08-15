@@ -58,8 +58,8 @@ export default new Command("init")
       if (options.pages) {
         scaffoldPagesRouter(options.providers, options.storage);
       }
-    } catch (error) {
-      if (error.isTtyError) {
+    } catch (error: unknown) {
+      if (typeof error === "object" && error !== null && "isTtyError" in error && (error as any).isTtyError) {
         console.error("Interactive mode not supported in this terminal.");
       } else {
         console.error(error);

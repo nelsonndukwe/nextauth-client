@@ -1,5 +1,6 @@
-// Type augmentations
-declare module "next-auth" {
+export const getAuthConfig = (providers: string[], storage?: boolean) => {
+  return `
+  declare module "next-auth" {
   interface Session {
     accessToken?: string;
   }
@@ -11,8 +12,8 @@ declare module "next-auth/jwt" {
   }
 }
 
-export const getAuthConfig = (providers: string[], storage?: boolean) => {
-  return `import NextAuth from "next-auth";
+  
+  import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import { object, string } from "zod";
