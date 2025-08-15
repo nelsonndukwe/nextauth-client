@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+import { execSync } from "child_process";
 
 export async function askSetupQuestions() {
   const answers = await inquirer.prompt([
@@ -44,3 +45,18 @@ export async function askSetupQuestions() {
   console.log("User selections:", answers);
   return answers;
 }
+
+export const autoInstall = async () => {
+  const { installNow } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "installNow",
+      message: "Do you want to install these dependencies now?",
+      default: true,
+    },
+  ]);
+
+  if (installNow) {
+    execSync("npm install", { stdio: "inherit" });
+  }
+};
