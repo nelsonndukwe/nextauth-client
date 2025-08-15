@@ -1,0 +1,46 @@
+import inquirer from "inquirer";
+
+export async function askSetupQuestions() {
+  const answers = await inquirer.prompt([
+    {
+      type: "list",
+      name: "routerType",
+      message: "Which Next.js router are you using?",
+      choices: ["App Router", "Pages Router"],
+    },
+    {
+      type: "confirm",
+      name: "isSrc",
+      message: "Is your code inside a src directory?",
+      default: false,
+    },
+    {
+      type: "checkbox",
+      name: "providers",
+      message: "Select authentication providers:",
+      choices: [
+        { name: "GitHub", value: "github" },
+        { name: "Google", value: "google" },
+        { name: "Auth0", value: "auth0" },
+        { name: "Discord", value: "discord" },
+        { name: "Apple", value: "apple" },
+        { name: "Twitter", value: "twitter" },
+      ],
+      validate: (selected) => {
+        if (selected.length === 0) {
+          return "You must choose at least one provider.";
+        }
+        return true;
+      },
+    },
+    {
+      type: "confirm",
+      name: "storage",
+      message: "Do you want to use Unstorage for session storage?",
+      default: false,
+    },
+  ]);
+
+  console.log("User selections:", answers);
+  return answers;
+}
