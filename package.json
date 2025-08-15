@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "commander": "^14.0.0",
+    "inquirer": "^12.9.2",
     "ts-node": "^10.9.2"
   }
 }
