@@ -26,10 +26,6 @@ export async function scaffoldAppRouter(
 
   // Check if files already exist
   if (fs.existsSync(authPath)) {
-    console.error(
-      "Auth configuration file already exists. Please remove it first."
-    );
-
     const res = await rewrite(path.parse(authPath).name);
     if (!res) {
       console.log("Exiting without changes.");
@@ -37,7 +33,6 @@ export async function scaffoldAppRouter(
     }
   }
   if (fs.existsSync(routePath)) {
-    console.error("Route file already exists. Please remove it first.");
 
     const res = await rewrite(path.parse(routePath).name);
     if (!res) {

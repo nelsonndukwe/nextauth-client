@@ -32,7 +32,7 @@ declare module "next-auth/jwt" {
   import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 ${providerImports}
-import { object, string } from "zod";
+import { object, email,  string } from "zod";
 import "next-auth/jwt";
 
 import { UpstashRedisAdapter } from "@auth/upstash-redis-adapter";
@@ -44,7 +44,7 @@ const redis = new Redis({
 });
 
 export const signInSchema = object({
-  email: .email("Invalid email").min(1, "Email is required"),
+  email: email("Invalid email").min(1, "Email is required"),
   password: string()
     .min(1, "Password is required")
     .min(8, "Password must be more than 8 characters")
@@ -56,7 +56,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   theme: { logo: "https://authjs.dev/img/logo-sm.png" },
   adapter: UpstashRedisAdapter(redis),
   providers: [
-   ${providerArray}
+   ${providerArray},
 
     // Credentials provider for email/password login
     Credentials({
