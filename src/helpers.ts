@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { getAuthConfig } from "./templates/auth";
 import { writeMiddleware } from "./templates/middlewear";
-import { autoInstall } from "./inquiery";
+import { autoInstall, rewrite } from "./inquiery";
 
 export function scaffoldAppRouter(
   src: boolean,
@@ -29,11 +29,35 @@ export function scaffoldAppRouter(
     console.error(
       "Auth configuration file already exists. Please remove it first."
     );
-    process.exit(1);
+
+    const res = rewrite(path.parse(authPath).name);
+    if (!res) {
+      console.log("Exiting without changes.");
+      process.exit(1);
+    }
   }
   if (fs.existsSync(routePath)) {
     console.error("Route file already exists. Please remove it first.");
-    process.exit(1);
+
+    const res = rewrite(path.parse(routePath).name);
+    if (!res) {
+      console.log("Exiting without changes.");
+      process.exit(1);
+    }
+  }
+
+  //check if middleware file exists and update with your data
+
+  if (fs.existsSync(middlewarePath)) {
+    const res = rewrite(path.parse(middlewarePath).name);
+    if (!res) {
+      console.log("Exiting without changes.");
+      process.exit(1);
+    } else {
+      fs.writeFileSync(middlewarePath, writeMiddleware());
+    }
+  } else {
+    fs.writeFileSync(middlewarePath, writeMiddleware());
   }
 
   // Create directories
@@ -45,7 +69,6 @@ export function scaffoldAppRouter(
     routePath,
     `import { handlers } from "@/auth";\nexport const { GET, POST } = handlers;`
   );
-  fs.writeFileSync(middlewarePath, writeMiddleware());
 
   updatePackageJson(providers, storage);
 
@@ -67,13 +90,31 @@ export function scaffoldPagesRouter(providers: string[], storage = false) {
 
   if (fs.existsSync(apiPath)) {
     console.error("❌ API route already exists. Please remove it first.");
+    const res = rewrite(path.parse(apiPath).name);
+    if (!res) {
+      console.log("Exiting without changes.");
+      process.exit(1);
+    }
     process.exit(1);
+  }
+
+  //check if middleware file exists and update with your data
+
+  if (fs.existsSync(middlewarePath)) {
+    const res = rewrite(path.parse(middlewarePath).name);
+    if (!res) {
+      console.log("Exiting without changes.");
+      process.exit(1);
+    } else {
+      fs.writeFileSync(middlewarePath, writeMiddleware());
+    }
+  } else {
+    fs.writeFileSync(middlewarePath, writeMiddleware());
   }
 
   fs.mkdirSync(path.dirname(apiPath), { recursive: true });
 
   fs.writeFileSync(apiPath, getAuthConfig(providers, storage));
-  fs.writeFileSync(middlewarePath, writeMiddleware());
   updatePackageJson(providers, storage);
   console.log("✅ Pages Router setup complete!");
 

@@ -60,3 +60,16 @@ export const autoInstall = async () => {
     execSync("npm install", { stdio: "inherit" });
   }
 };
+
+export const rewrite = async (filename: string) => {
+  const { rewrite } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "rewrite",
+      message: `Do you want to rewrite ${filename}, all existing content will be lost?`,
+      default: false,
+    },
+  ]);
+console.log(`rewrite`, rewrite);
+  return rewrite;
+};
