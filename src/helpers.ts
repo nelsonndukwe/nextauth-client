@@ -138,11 +138,6 @@ export function updatePackageJson(providers: string[], storage = false) {
     packageJson.dependencies["next-auth"] = "^5.0.0";
   }
 
-  // Add selected providers
-  providers.forEach((provider) => {
-    packageJson.dependencies[`@auth/${provider}`] = "latest";
-  });
-
   // Add storage adapter if selected
   if (storage) {
     packageJson.dependencies["@auth/upstash-redis-adapter"] = "latest";
