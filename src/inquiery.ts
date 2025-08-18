@@ -37,7 +37,7 @@ export async function askSetupQuestions() {
     {
       type: "confirm",
       name: "storage",
-      message: "Do you want to use Unstorage for session storage?",
+      message: "Do you want to use Upstash Redis for session storage?",
       default: false,
     },
   ]);

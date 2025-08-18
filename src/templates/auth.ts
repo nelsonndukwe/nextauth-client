@@ -31,7 +31,7 @@ declare module "next-auth/jwt" {
   
   import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import GitHub from "next-auth/providers/github";
+${providerImports}
 import { object, string } from "zod";
 import "next-auth/jwt";
 

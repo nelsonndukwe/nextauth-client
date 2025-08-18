@@ -90,6 +90,7 @@ export function updatePackageJson(providers: string[], storage = false) {
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
 
+  console.log(`packageJson`, packageJson);
   // Ensure dependencies object exists
   packageJson.dependencies = packageJson.dependencies || {};
 
