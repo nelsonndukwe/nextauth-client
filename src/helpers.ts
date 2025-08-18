@@ -135,7 +135,7 @@ export function updatePackageJson(providers: string[], storage = false) {
 
   // Add NextAuth (required)
   if (!packageJson.dependencies["next-auth"]) {
-    packageJson.dependencies["next-auth"] = "^5.0.0";
+    packageJson.dependencies["next-auth"] = "latest";
   }
 
   // Add storage adapter if selected
