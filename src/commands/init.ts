@@ -7,7 +7,6 @@ import { askSetupQuestions } from "../inquiery";
 export default new Command("init")
   .description("Initialize NextAuth in your Next.js project")
   .action(async () => {
-    const envPath = path.resolve(".env");
 
     try {
       const answers = await askSetupQuestions();
@@ -19,37 +18,6 @@ export default new Command("init")
         providers: answers.providers,
         storage: answers.storage,
       };
-
-      // Base AUTH_SECRET
-      fs.writeFileSync(
-        envPath,
-        `AUTH_SECRET=${Math.random().toString(36).substring(2, 15)}\n`
-      );
-
-      // Storage variables
-      if (options.storage) {
-        fs.writeFileSync(envPath, `UPSTASH_REDIS_URL=your-upstash-url\n`, {
-          flag: "a",
-        });
-        fs.writeFileSync(envPath, `UPSTASH_REDIS_TOKEN=your-upstash-token\n`, {
-          flag: "a",
-        });
-      }
-
-      // Provider credentials
-      options.providers.forEach((provider: string) => {
-        const upper = provider.toUpperCase();
-        fs.writeFileSync(
-          envPath,
-          `AUTH_${upper}_ID=dummy-${Math.random()
-            .toString(36)
-            .substring(2, 15)}\n` +
-            `AUTH_${upper}_SECRET=dummy-${Math.random()
-              .toString(36)
-              .substring(2, 15)}\n`,
-          { flag: "a" }
-        );
-      });
 
       // Scaffold files
       if (options.app) {

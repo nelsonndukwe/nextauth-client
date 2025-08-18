@@ -11,7 +11,7 @@ export const getAuthConfig = (providers: string[], storage?: boolean) => {
   const providerArray = providers
     .map((provider) => {
       const name = provider.charAt(0).toUpperCase() + provider.slice(1);
-      return `${name},`;
+      return `${name}`;
     })
     .join(",\n    ");
 
@@ -44,7 +44,7 @@ const redis = new Redis({
 });
 
 export const signInSchema = object({
-  email: string().email("Invalid email").min(1, "Email is required"),
+  email: .email("Invalid email").min(1, "Email is required"),
   password: string()
     .min(1, "Password is required")
     .min(8, "Password must be more than 8 characters")
