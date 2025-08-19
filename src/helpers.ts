@@ -52,10 +52,10 @@ export async function scaffoldAppRouter(
       console.log("Exiting without changes.");
       process.exit(1);
     } else {
-      fs.writeFileSync(middlewarePath, writeMiddleware());
+      fs.writeFileSync(middlewarePath, writeMiddleware(version));
     }
   } else {
-    fs.writeFileSync(middlewarePath, writeMiddleware());
+    fs.writeFileSync(middlewarePath, writeMiddleware(version));
   }
 
   // Create directories
@@ -65,14 +65,13 @@ export async function scaffoldAppRouter(
 
   if (version === "V5") {
     fs.writeFileSync(authPath, getAuthConfigV5(providers, storage));
+    fs.writeFileSync(
+      routePath,
+      `import { handlers } from "@/auth";\nexport const { GET, POST } = handlers;`
+    );
   } else {
     fs.writeFileSync(authPath, getAuthConfigV4(providers, storage));
   }
-
-  fs.writeFileSync(
-    routePath,
-    `import { handlers } from "@/auth";\nexport const { GET, POST } = handlers;`
-  );
   writeEnv(providers, storage);
   updatePackageJson(storage);
 
@@ -109,10 +108,10 @@ export async function scaffoldPagesRouter(
       console.log("Exiting without changes.");
       process.exit(1);
     } else {
-      fs.writeFileSync(middlewarePath, writeMiddleware());
+      fs.writeFileSync(middlewarePath, writeMiddleware("V4"));
     }
   } else {
-    fs.writeFileSync(middlewarePath, writeMiddleware());
+    fs.writeFileSync(middlewarePath, writeMiddleware("V4"));
   }
 
   fs.mkdirSync(path.dirname(apiPath), { recursive: true });

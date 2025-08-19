@@ -1,6 +1,6 @@
-export const writeMiddleware = () => {
-  return `
-
+export const writeMiddleware = (version: string) => {
+  return version === "V5"
+    ? `
   // middleware.ts
   export { auth as middleware } from "@/auth"
   
@@ -12,5 +12,15 @@ export const writeMiddleware = () => {
   export const config = {
     matcher: ["/dashboard/:path*", "/settings/:path*"],
   };
+  `
+    : `
+  export { default } from "next-auth/middleware";
+
+export const config = {
+  matcher: [
+    "/*/:path*",
+  ],
+};
+
   `;
 };
