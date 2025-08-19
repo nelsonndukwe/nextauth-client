@@ -33,7 +33,6 @@ export async function scaffoldAppRouter(
     }
   }
   if (fs.existsSync(routePath)) {
-
     const res = await rewrite(path.parse(routePath).name);
     if (!res) {
       console.log("Exiting without changes.");
@@ -65,7 +64,7 @@ export async function scaffoldAppRouter(
     `import { handlers } from "@/auth";\nexport const { GET, POST } = handlers;`
   );
   writeEnv(providers, storage);
-  updatePackageJson(providers, storage);
+  updatePackageJson(storage);
 
   console.log("✅ App Router setup complete!");
   autoInstall();
@@ -114,13 +113,13 @@ export async function scaffoldPagesRouter(
 
   fs.writeFileSync(apiPath, getAuthConfig(providers, storage));
   writeEnv(providers, storage);
-  updatePackageJson(providers, storage);
+  updatePackageJson(storage);
   console.log("✅ Pages Router setup complete!");
 
   autoInstall();
 }
 
-export function updatePackageJson(providers: string[], storage = false) {
+export function updatePackageJson(storage = false) {
   const packageJsonPath = path.resolve("package.json");
 
   if (!fs.existsSync(packageJsonPath)) {
@@ -136,6 +135,11 @@ export function updatePackageJson(providers: string[], storage = false) {
   // Add NextAuth (required)
   if (!packageJson.dependencies["next-auth"]) {
     packageJson.dependencies["next-auth"] = "latest";
+  }
+
+  // Add Zod
+  if (!packageJson.dependencies["zod"]) {
+    packageJson.dependencies["zod"] = "latest";
   }
 
   // Add storage adapter if selected

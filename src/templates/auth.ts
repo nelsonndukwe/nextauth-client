@@ -15,6 +15,19 @@ export const getAuthConfig = (providers: string[], storage?: boolean) => {
     })
     .join(",\n    ");
 
+  let storageBaseData: string | null = null;
+
+  if (storage) {
+    storageBaseData = `import { UpstashRedisAdapter } from "@auth/upstash-redis-adapter";
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_URL!,
+  token: process.env.UPSTASH_REDIS_TOKEN!,
+});
+`;
+  }
+
   return `
   declare module "next-auth" {
   interface Session {
@@ -35,13 +48,7 @@ ${providerImports}
 import { object, email,  string } from "zod";
 import "next-auth/jwt";
 
-import { UpstashRedisAdapter } from "@auth/upstash-redis-adapter";
-import { Redis } from "@upstash/redis";
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_URL!,
-  token: process.env.UPSTASH_REDIS_TOKEN!,
-});
+${storageBaseData}
 
 export const signInSchema = object({
   email: email("Invalid email").min(1, "Email is required"),
