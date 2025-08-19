@@ -12,7 +12,7 @@ export const getAuthConfig = (providers: string[], storage?: boolean) => {
     .map((provider) => {
       const name = provider.charAt(0).toUpperCase() + provider.slice(1);
       return `${name}({
-      clientId: process.env.AUTH_${name.toUpperCase()}_ID,
+      clientId: process.env.AUTH_${name.toUpperCase()}_ID!,
       clientSecret: process.env.AUTH_${name.toUpperCase()}_SECRET!,
     })`;
     })
@@ -51,7 +51,7 @@ ${providerImports}
 import { object, email,  string } from "zod";
 import "next-auth/jwt";
 
-${storageBaseData}
+${storage && storageBaseData}
 
 export const signInSchema = object({
   email: email("Invalid email").min(1, "Email is required"),
@@ -64,7 +64,7 @@ export const signInSchema = object({
 export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: !!process.env.AUTH_DEBUG,
   theme: { logo: "https://authjs.dev/img/logo-sm.png" },
-  adapter: UpstashRedisAdapter(redis),
+ adapter: storage ? UpstashRedisAdapter(redis) : undefined,
   providers: [
    ${providerArray},
 
@@ -123,9 +123,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
   },
-  basePath: "/auth",
   session: { strategy: "jwt" },
-  experimental: { enableWebAuthn: true },
+    pages: {
+    signIn: "/sign-in",
+    signUp: "/sign-up",
+    error: "/auth/error",
+  },
+      secret: process.env.NEXTAUTH_SECRET,
 });
 `;
 };
