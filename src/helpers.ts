@@ -70,6 +70,7 @@ export async function scaffoldAppRouter(
       `import { handlers } from "@/auth";\nexport const { GET, POST } = handlers;`
     );
   } else {
+    fs.mkdirSync(path.dirname(authPath), { recursive: true });
     fs.writeFileSync(authPath, getAuthConfigV4(providers, storage));
   }
   writeEnv(providers, storage);
@@ -137,32 +138,32 @@ export function updatePackageJson(storage = false, version = "V5") {
   // Ensure dependencies object exists
   packageJson.dependencies = packageJson.dependencies || {};
 
-  // Add NextAuth (required)
-  if (!packageJson.dependencies["next-auth"] && version === "V5") {
-    packageJson.dependencies["next-auth"] = "^5.0.0";
-  } else if (!packageJson.dependencies["next-auth"] && version === "V4") {
-    {
+  // Add NextAuth based on version
+  if (!packageJson.dependencies["next-auth"]) {
+    if (version === "V5") {
+      packageJson.dependencies["next-auth"] = "^5.0.0";
+    } else if (version === "V4") {
       packageJson.dependencies["next-auth"] = "^4.24.4";
     }
-
-    // Add Zod
-    if (!packageJson.dependencies["zod"]) {
-      packageJson.dependencies["zod"] = "latest";
-    }
-
-    // Add storage adapter if selected
-    if (storage) {
-      packageJson.dependencies["@auth/upstash-redis-adapter"] = "latest";
-      packageJson.dependencies["@upstash/redis"] = "latest";
-    }
-
-    // Write changes back to package.json
-    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-    console.log(
-      "📦 package.json updated! Run `npm install` to install new dependencies."
-    );
   }
+
+  // Add Zod
+  if (!packageJson.dependencies["zod"]) {
+    packageJson.dependencies["zod"] = "latest";
+  }
+
+  // Add storage adapter if selected
+  if (storage) {
+    packageJson.dependencies["@auth/upstash-redis-adapter"] = "latest";
+    packageJson.dependencies["@upstash/redis"] = "latest";
+  }
+
+  // ✅ Always write at the end
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+  console.log(
+    "📦 package.json updated! Run `npm install` to install new dependencies."
+  );
 }
 
 const writeEnv = (providers: string[], storage: boolean) => {
