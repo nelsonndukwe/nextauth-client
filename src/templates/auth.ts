@@ -93,7 +93,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }, 300);
         });
 
-         if (user) {
+         if (!user) {
          throw new Error("User not found");
           return null;
         }

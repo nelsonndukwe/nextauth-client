@@ -134,7 +134,7 @@ export function updatePackageJson(storage = false) {
 
   // Add NextAuth (required)
   if (!packageJson.dependencies["next-auth"]) {
-    packageJson.dependencies["next-auth"] = "latest";
+    packageJson.dependencies["next-auth"] = "5.0.0";
   }
 
   // Add Zod
