@@ -58,19 +58,22 @@ export async function scaffoldAppRouter(
     fs.writeFileSync(middlewarePath, writeMiddleware(version));
   }
 
-  // Create directories
-  fs.mkdirSync(path.dirname(routePath), { recursive: true });
-
-  // Write files
-
   if (version === "V5") {
+    // Create directories
+    fs.mkdirSync(path.dirname(routePath), { recursive: true });
+    // Write files
+
     fs.writeFileSync(authPath, getAuthConfigV5(providers, storage));
     fs.writeFileSync(
       routePath,
       `import { handlers } from "@/auth";\nexport const { GET, POST } = handlers;`
     );
   } else {
+    // Create directories
+
     fs.mkdirSync(path.dirname(authPath), { recursive: true });
+    // Write files
+
     fs.writeFileSync(authPath, getAuthConfigV4(providers, storage));
   }
   writeEnv(providers, storage);
