@@ -11,7 +11,10 @@ export const getAuthConfig = (providers: string[], storage?: boolean) => {
   const providerArray = providers
     .map((provider) => {
       const name = provider.charAt(0).toUpperCase() + provider.slice(1);
-      return `${name}`;
+      return `${name}({
+      clientId: process.env.AUTH_${name.toUpperCase()}_ID,
+      clientSecret: process.env.AUTH_${name.toUpperCase()}_SECRET!,
+    })`;
     })
     .join(",\n    ");
 
@@ -42,7 +45,7 @@ declare module "next-auth/jwt" {
 }
 
   
-  import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 ${providerImports}
 import { object, email,  string } from "zod";
@@ -78,19 +81,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const { email, password } = signInSchema.parse(credentials);
 
         // TODO: Implement actual DB lookup here
-        const user = await new Promise((err, resolve) => {
-          setTimeout(() => {}, 300);
+        const user:User | null = await new Promise((resolve) => {
+           setTimeout(() => {
+            if (email === "@example.com" && password === "password123") {
+              resolve({ id: "1", name: "Example User", email });
+            } else {
+              resolve(null);
+            }
+          }, 300);
         });
 
-        if (!user) throw new Error("Invalid credentials");
+         if (user) {
+         throw new Error("User not found");
+          return null;
+        }
         return user;
       },
     }),
   ],
 
   callbacks: {
-    authorized: async ({ auth }) => !!auth,
-    jwt({ token, trigger, session, account }) {
+ async signIn({ account, profile }) {
+      if (account && profile) {
+        if (account.provider === "google") {
+          if (profile.email) {
+            return true;
+          }
+          return false; // block all other emails
+        }
+      }
+      return true; // fallback allow for other providers
+    },    jwt({ token, trigger, session, account }) {
       if (trigger === "update") token.name = session.user.name;
       if (account?.provider === "google") {
         return { ...token, accessToken: account.access_token };
