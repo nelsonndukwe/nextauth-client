@@ -5,6 +5,12 @@ export async function askSetupQuestions() {
   const answers = await inquirer.prompt([
     {
       type: "list",
+      name: "version",
+      message: "Which version do you want to work with?",
+      choices: ["V5", "V4"],
+    },
+    {
+      type: "list",
       name: "routerType",
       message: "Which Next.js router are you using?",
       choices: ["App Router", "Pages Router"],

@@ -1,18 +1,22 @@
 import fs from "fs";
 import path from "path";
-import { getAuthConfig } from "./templates/auth";
+import { getAuthConfigV4, getAuthConfigV5 } from "./templates/auth";
 import { writeMiddleware } from "./templates/middlewear";
 import { autoInstall, rewrite } from "./inquiery";
 
 export async function scaffoldAppRouter(
   src: boolean,
   providers: string[],
-  storage = false
+  storage = false,
+  version: string
 ) {
   console.log("📦 Setting up NextAuth.js for App Router...");
 
   const baseDir = src ? "src" : "";
-  const authPath = path.join(process.cwd(), "auth.ts");
+  const authPath =
+    version === "V5"
+      ? path.join(process.cwd(), "auth.ts")
+      : path.join(process.cwd(), "pages", "api", "auth", "[...nextauth].ts");
   const routePath = path.join(
     process.cwd(),
     baseDir,
@@ -58,7 +62,13 @@ export async function scaffoldAppRouter(
   fs.mkdirSync(path.dirname(routePath), { recursive: true });
 
   // Write files
-  fs.writeFileSync(authPath, getAuthConfig(providers, storage));
+
+  if (version === "V5") {
+    fs.writeFileSync(authPath, getAuthConfigV5(providers, storage));
+  } else {
+    fs.writeFileSync(authPath, getAuthConfigV4(providers, storage));
+  }
+
   fs.writeFileSync(
     routePath,
     `import { handlers } from "@/auth";\nexport const { GET, POST } = handlers;`
@@ -74,7 +84,7 @@ export async function scaffoldPagesRouter(
   providers: string[],
   storage = false
 ) {
-  console.log("📦 Setting up NextAuth.js for Pages Router...");
+  console.log("📦 Setting up NextAuth.js v4 for Pages Router...");
 
   const apiPath = path.join(
     process.cwd(),
@@ -86,16 +96,12 @@ export async function scaffoldPagesRouter(
   const middlewarePath = path.resolve("middleware.ts");
 
   if (fs.existsSync(apiPath)) {
-    console.error("❌ API route already exists. Please remove it first.");
     const res = await rewrite(path.parse(apiPath).name);
     if (!res) {
       console.log("Exiting without changes.");
       process.exit(1);
     }
-    process.exit(1);
   }
-
-  //check if middleware file exists and update with your data
 
   if (fs.existsSync(middlewarePath)) {
     const res = await rewrite(path.parse(middlewarePath).name);
@@ -111,14 +117,14 @@ export async function scaffoldPagesRouter(
 
   fs.mkdirSync(path.dirname(apiPath), { recursive: true });
 
-  fs.writeFileSync(apiPath, getAuthConfig(providers, storage));
+  fs.writeFileSync(apiPath, getAuthConfigV4(providers, storage));
+
   writeEnv(providers, storage);
   updatePackageJson(storage);
-  console.log("✅ Pages Router setup complete!");
 
+  console.log("✅ Pages Router (NextAuth v4) setup complete!");
   autoInstall();
 }
-
 export function updatePackageJson(storage = false) {
   const packageJsonPath = path.resolve("package.json");
 
