@@ -18,7 +18,7 @@ export const getAuthConfig = (providers: string[], storage?: boolean) => {
     })
     .join(",\n    ");
 
-  let storageBaseData: string | null = null;
+  let storageBaseData: string;
 
   if (storage) {
     storageBaseData = `import { UpstashRedisAdapter } from "@auth/upstash-redis-adapter";
@@ -29,6 +29,8 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_TOKEN!,
 });
 `;
+  } else {
+    storageBaseData = "";
   }
 
   return `
@@ -51,7 +53,7 @@ ${providerImports}
 import { object, email,  string } from "zod";
 import "next-auth/jwt";
 
-${storage && storageBaseData}
+${storageBaseData}
 
 export const signInSchema = object({
   email: email("Invalid email").min(1, "Email is required"),
@@ -64,7 +66,7 @@ export const signInSchema = object({
 export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: !!process.env.AUTH_DEBUG,
   theme: { logo: "https://authjs.dev/img/logo-sm.png" },
- adapter: storage ? UpstashRedisAdapter(redis) : undefined,
+ adapter: ${storage ? "UpstashRedisAdapter(redis)" : undefined},
   providers: [
    ${providerArray},
 
