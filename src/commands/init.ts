@@ -1,8 +1,7 @@
-import fs from "fs";
-import path from "path";
+
 import { Command } from "commander";
-import { scaffoldAppRouter, scaffoldPagesRouter } from "../helpers";
-import { askSetupQuestions } from "../inquiery";
+import { scaffoldAppRouter, scaffoldPagesRouter } from "../helpers.js";
+import { askSetupQuestions } from "../inquiery.js";
 
 export default new Command("init")
   .description("Initialize NextAuth in your Next.js project")

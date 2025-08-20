@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { getAuthConfigV4, getAuthConfigV5 } from "./templates/auth";
-import { writeMiddleware } from "./templates/middlewear";
-import { autoInstall, rewrite } from "./inquiery";
+import { getAuthConfigV4, getAuthConfigV5 } from "./templates/auth.js";
+import { writeMiddleware } from "./templates/middlewear.js";
+import { autoInstall, rewrite } from "./inquiery.js";
 
 export async function scaffoldAppRouter(
   src: boolean,
