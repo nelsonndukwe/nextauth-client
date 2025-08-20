@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- Final chnages and attachments
+
 All notable changes to this project will be documented here.  
 This file is maintained automatically by [Changesets](https://github.com/changesets/changesets).
 
@@ -15,7 +21,8 @@ This file is maintained automatically by [Changesets](https://github.com/changes
 ## [0.1.0] - YYYY-MM-DD
 
 ### Added
-- Initial release of **your CLI** 🎉  
+
+- Initial release of **your CLI** 🎉
 - Scaffold NextAuth.js setup for both App Router and Pages Router.
 - Supports NextAuth.js v4 and v5 with a version flag.
 - Optional storage adapter support (Upstash Redis).
