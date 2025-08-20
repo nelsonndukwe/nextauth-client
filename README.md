@@ -9,7 +9,7 @@ This guide shows how to use the **NextAuth CLI** to quickly scaffold authenticat
 You can install the CLI globally:
 
 ```bash
-npm install -g nextauth-client
+npm install -g scaffold-auth
 
 
 Usage 

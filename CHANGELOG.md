@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0
+
+### Minor Changes
+
+- Updated the cli name
+
 ## 1.1.0
 
 ### Minor Changes
