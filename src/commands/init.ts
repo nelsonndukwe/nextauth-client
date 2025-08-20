@@ -4,7 +4,7 @@ import { scaffoldAppRouter, scaffoldPagesRouter } from "../helpers.js";
 import { askSetupQuestions } from "../inquiery.js";
 
 export default new Command("init")
-  .description("Initialize NextAuth in your Next.js project")
+  .description("Initialize a Auth file Scaffold for your Next.js project")
   .action(async () => {
     try {
       const answers = await askSetupQuestions();

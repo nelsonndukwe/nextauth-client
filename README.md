@@ -1,6 +1,6 @@
 # Usage Guide
 
-This guide shows how to use the **NextAuth CLI** to quickly scaffold authentication into your Next.js projects.
+This guide shows how to use the **scaffold-auth CLI** to quickly scaffold authentication into your Next.js projects.
 
 ---
 
@@ -14,7 +14,7 @@ npm install -g scaffold-auth
 
 Usage 
 
-npx nextauth-client init
+npx scaffold-auth init
 
 You will be prompted for:
 
