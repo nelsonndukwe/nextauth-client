@@ -47,8 +47,6 @@ export async function askSetupQuestions() {
       default: false,
     },
   ]);
-
-  console.log("User selections:", answers);
   return answers;
 }
 
