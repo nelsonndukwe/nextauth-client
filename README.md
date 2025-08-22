@@ -1,13 +1,13 @@
-## Scaffold Auth CLI for Next.js (NextAuth.js v4/v5)
+## Scaffold Auth CLI for Next.js (NextAuth.js)
 
-A tiny, interactive CLI that scaffolds a ready-to-run NextAuth.js setup in your Next.js app. It supports both App Router and Pages Router, NextAuth v4 and v5, multiple providers, optional Upstash Redis session storage, and sensible defaults.
+A tiny, interactive CLI that scaffolds a ready-to-run NextAuth.js setup in your Next.js app. It supports both App Router and Pages Router, NextAuth v4, multiple providers, optional Upstash Redis session storage, and sensible defaults.
 
 ---
 
 ### Features
 - **Interactive setup:** Guided prompts for router, NextAuth version, providers, and storage
 - **App Router or Pages Router:** Generates the proper API routes and middleware
-- **NextAuth v5 or v4:** Template output adapts to your selection
+- **NextAuth v4:** Template output adapts to your selection
 - **Multiple providers:** GitHub, Google, Auth0, Discord, Apple, Twitter, plus Credentials
 - **Optional Upstash Redis:** Adds adapter and config when selected
 - **Env and deps automation:** Creates .env entries and updates package.json; offers to run install
@@ -38,7 +38,7 @@ npx scaffold-auth init
 ```
 
 You’ll be prompted for:
-- **NextAuth.js version:** V5 or V4
+- **NextAuth.js version:**  V4
 - **Router type:** App Router or Pages Router
 - **src directory:** Whether your app code lives under `src/`
 - **Providers:** GitHub, Google, Auth0, Discord, Apple, Twitter (choose ≥1)
@@ -49,36 +49,6 @@ At the end, the CLI updates dependencies, writes files, creates `.env` entries, 
 ---
 
 ## What gets generated
-
-### App Router + NextAuth v5
-- `auth.ts` (project root): NextAuth v5 config (providers, callbacks, etc.)
-- `app/api/auth/[...nextauth]/route.ts`: Route handlers re-exported from `auth.ts`
-- `middleware.ts`: Exports `auth` middleware and an example `matcher`
-
-When `src` is selected, files under `app/` are placed beneath `src/`.
-
-Example with `src = true`:
-```bash
-src/
-  app/
-    api/
-      auth/
-        [...nextauth]/
-          route.ts
-auth.ts
-middleware.ts
-```
-
-Example with `src = false`:
-```bash
-app/
-  api/
-    auth/
-      [...nextauth]/
-        route.ts
-auth.ts
-middleware.ts
-```
 
 ### App Router + NextAuth v4
 For v4, NextAuth uses a Pages API route. The CLI creates:
@@ -102,14 +72,14 @@ The CLI writes baseline variables to `.env` (creates the file if needed):
   - `UPSTASH_REDIS_TOKEN`
 
 Notes:
-- The generated templates reference `NEXTAUTH_SECRET` (v4 and v5 in this CLI). Set it in your `.env`.
+- The generated templates reference `NEXTAUTH_SECRET` (v4). Set it in your `.env`.
 - The CLI also seeds `AUTH_SECRET` for convenience. You can copy the same value into `NEXTAUTH_SECRET` or generate a new one.
 
 ---
 
 ## Dependencies the CLI adds
 The CLI updates `package.json` (if present) with:
-- `next-auth`: `^5.0.0` for V5 or `^4.24.4` for V4 (only if not already present)
+- `next-auth`: `latest version` for V4 (only if not already present)
 - `zod`: `latest` (only if not present)
 - If storage is enabled:
   - `@auth/upstash-redis-adapter`: `latest`
@@ -136,9 +106,6 @@ The credentials provider includes placeholder logic; replace it with your DB loo
 ---
 
 ## Middleware
-- **v5 (App Router):**
-  - `middleware.ts` re-exports `auth` from `@/auth`
-  - Example `config.matcher` protects `/dashboard/*` and `/settings/*`
 - **v4:**
   - `middleware.ts` re-exports the default NextAuth middleware
   - Example `config.matcher` protects all nested routes
@@ -191,7 +158,6 @@ npx scaffold-auth init
 - **“File already exists” prompts**: The CLI asks before overwriting. Choose accordingly.
 - **Missing `package.json`**: Initialize your project first (`npm init` or `npm create next-app`).
 - **Secrets mismatch**: For v4, ensure `NEXTAUTH_SECRET` is set. The CLI seeds `AUTH_SECRET`; set `NEXTAUTH_SECRET` to the same value if desired.
-- **Import paths**: The App Router v5 `route.ts` imports handlers from `@/auth`. If you move `auth.ts`, update import paths accordingly.
 
 ---
 
