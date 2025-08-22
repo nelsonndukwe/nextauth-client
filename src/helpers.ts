@@ -48,8 +48,8 @@ export async function scaffoldAppRouter(
   }
 
   updatePackageJson(storage, version);
+  await autoInstall();
   console.log("✅ Dependencies added and installed!");
-  autoInstall();
 
   //check if middleware file exists and update with your data
 
@@ -101,9 +101,9 @@ export async function scaffoldPagesRouter(
   }
 
   updatePackageJson(storage, "V4");
-
+  await autoInstall();
   console.log("✅ Dependencies added and installed!");
-  autoInstall();
+
 
   if (fs.existsSync(middlewarePath)) {
     const res = await rewrite(path.parse(middlewarePath).name);
