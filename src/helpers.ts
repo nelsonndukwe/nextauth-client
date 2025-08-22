@@ -8,15 +8,18 @@ export async function scaffoldAppRouter(
   src: boolean,
   providers: string[],
   storage = false,
-  version: string
+  version = "V4" //Defaults to V4 for backwards compatibility
 ) {
   console.log("📦 Setting up NextAuth.js for App Router...");
 
   const baseDir = src ? "src" : "";
-  const authPath =
-    version === "V5"
-      ? path.join(process.cwd(), "auth.ts")
-      : path.join(process.cwd(), "pages", "api", "auth", "[...nextauth].ts");
+  const authPath = path.join(
+    process.cwd(),
+    "pages",
+    "api",
+    "auth",
+    "[...nextauth].ts"
+  );
   const routePath = path.join(
     process.cwd(),
     baseDir,
@@ -44,6 +47,10 @@ export async function scaffoldAppRouter(
     }
   }
 
+  updatePackageJson(storage, version);
+  console.log("✅ Dependencies added and installed!");
+  autoInstall();
+
   //check if middleware file exists and update with your data
 
   if (fs.existsSync(middlewarePath)) {
@@ -58,29 +65,16 @@ export async function scaffoldAppRouter(
     fs.writeFileSync(middlewarePath, writeMiddleware(version));
   }
 
-  if (version === "V5") {
-    // Create directories
-    fs.mkdirSync(path.dirname(routePath), { recursive: true });
-    // Write files
+  // Create directories
 
-    fs.writeFileSync(authPath, getAuthConfigV5(providers, storage));
-    fs.writeFileSync(
-      routePath,
-      `import { handlers } from "@/auth";\nexport const { GET, POST } = handlers;`
-    );
-  } else {
-    // Create directories
+  fs.mkdirSync(path.dirname(authPath), { recursive: true });
+  // Write files
 
-    fs.mkdirSync(path.dirname(authPath), { recursive: true });
-    // Write files
+  fs.writeFileSync(authPath, getAuthConfigV4(providers, storage));
 
-    fs.writeFileSync(authPath, getAuthConfigV4(providers, storage));
-  }
   writeEnv(providers, storage);
-  updatePackageJson(storage, version);
 
   console.log("✅ App Router setup complete!");
-  autoInstall();
 }
 
 export async function scaffoldPagesRouter(
@@ -106,6 +100,11 @@ export async function scaffoldPagesRouter(
     }
   }
 
+  updatePackageJson(storage, "V4");
+
+  console.log("✅ Dependencies added and installed!");
+  autoInstall();
+
   if (fs.existsSync(middlewarePath)) {
     const res = await rewrite(path.parse(middlewarePath).name);
     if (!res) {
@@ -123,12 +122,9 @@ export async function scaffoldPagesRouter(
   fs.writeFileSync(apiPath, getAuthConfigV4(providers, storage));
 
   writeEnv(providers, storage);
-  updatePackageJson(storage, "V4");
-
   console.log("✅ Pages Router (NextAuth v4) setup complete!");
-  autoInstall();
 }
-export function updatePackageJson(storage = false, version = "V5") {
+export function updatePackageJson(storage = false, version = "V4") {
   const packageJsonPath = path.resolve("package.json");
 
   if (!fs.existsSync(packageJsonPath)) {
@@ -146,7 +142,7 @@ export function updatePackageJson(storage = false, version = "V5") {
     if (version === "V5") {
       packageJson.dependencies["next-auth"] = "^5.0.0";
     } else if (version === "V4") {
-      packageJson.dependencies["next-auth"] = "^4.24.4";
+      packageJson.dependencies["next-auth"] = "latest";
     }
   }
 

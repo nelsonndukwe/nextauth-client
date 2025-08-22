@@ -10,7 +10,6 @@ export default new Command("init")
       const answers = await askSetupQuestions();
 
       const options = {
-        version: answers.version,
         app: answers.routerType === "App Router",
         pages: answers.routerType === "Pages Router",
         src: answers.isSrc,
@@ -24,7 +23,6 @@ export default new Command("init")
           options.src,
           options.providers,
           options.storage,
-          options.version
         );
       }
       if (options.pages) {

@@ -3,12 +3,12 @@ import { execSync } from "child_process";
 
 export async function askSetupQuestions() {
   const answers = await inquirer.prompt([
-    {
-      type: "list",
-      name: "version",
-      message: "Which version do you want to work with?",
-      choices: ["V5", "V4"],
-    },
+    // {
+    //   type: "list",
+    //   name: "version",
+    //   message: "Which version do you want to work with?",
+    //   choices: ["V5", "V4"],
+    // },
     {
       type: "list",
       name: "routerType",
