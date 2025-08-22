@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0
+
+### Minor Changes
+
+- Updated the ReadMe file to a more detailed and comprehensive verison
+
 ## 1.3.0
 
 ### Minor Changes
