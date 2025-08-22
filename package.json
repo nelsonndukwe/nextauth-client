@@ -1,6 +1,6 @@
 {
   "name": "scaffold-auth",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A CLI tool to scaffold NextAuth.js setup for version 5 and 4",
   "main": "index.js",
   "files": [

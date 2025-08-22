@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1
+
+### Patch Changes
+
+- Adjusted the entire project to only scaffold V4 stable version
+
 ## 1.4.0
 
 ### Minor Changes
